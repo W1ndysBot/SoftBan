@@ -91,31 +91,26 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
     if not is_authorized:
         return
 
-    command, *params = raw_message.split()
-    if command == "sb-add":
-        target_user_id = params[0]
-        match = re.search(r"\[CQ:at,qq=(\d+)\]", target_user_id)
-        if match:
-            target_user_id = match.group(1)  # 获取目标用户ID
-        logging.info(f"添加软封禁用户: {target_user_id}")
-        add_SoftBan_user(group_id, target_user_id)
-        await send_group_msg(
-            websocket, group_id, f"[CQ:at,qq={target_user_id}] 已被软封禁"
-        )
-    elif command == "sb-rm":
-        target_user_id = params[0]
-        match = re.search(r"\[CQ:at,qq=(\d+)\]", target_user_id)
-        if match:
-            target_user_id = match.group(1)
-        logging.info(f"删除软封禁用户: {target_user_id}")
-        remove_SoftBan_user(group_id, target_user_id)
-        await send_group_msg(
-            websocket, group_id, f"[CQ:at,qq={target_user_id}] 已从软封禁列表中删除"
-        )
-    elif command == "sb-list":
+    if raw_message == "sb-list":
         softban_list = load_SoftBan_users(group_id)
         if softban_list:
             await send_group_msg(websocket, group_id, f"软封禁用户列表: {softban_list}")
+    elif raw_message.startswith("sb-add"):
+        match = re.search(r"\[CQ:at,qq=(\d+)\]", raw_message)
+        if match:
+            target_user_id = match.group(1)  # 获取目标用户ID
+            add_SoftBan_user(group_id, target_user_id)
+            await send_group_msg(
+                websocket, group_id, f"[CQ:at,qq={target_user_id}] 已被软封禁"
+            )
+    elif raw_message.startswith("sb-rm"):
+        match = re.search(r"\[CQ:at,qq=(\d+)\]", raw_message)
+        if match:
+            target_user_id = match.group(1)
+            remove_SoftBan_user(group_id, target_user_id)
+            await send_group_msg(
+                websocket, group_id, f"[CQ:at,qq={target_user_id}] 已从软封禁列表中删除"
+            )
 
 
 # 群消息处理函数
