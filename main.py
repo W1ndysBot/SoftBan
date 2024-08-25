@@ -97,7 +97,8 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
             await send_group_msg(
                 websocket,
                 group_id,
-                f"[CQ:reply,id={message_id}]群{group_id}软封禁用户列表:\n{'\n'.join(softban_list)}",
+                f"[CQ:reply,id={message_id}]群{group_id}软封禁用户列表:\n"
+                + "\n".join(softban_list),
             )
         else:
             await send_group_msg(
