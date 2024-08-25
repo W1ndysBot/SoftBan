@@ -82,20 +82,19 @@ def remove_SoftBan_user(group_id, user_id):
 
 # 保存功能开关状态
 def save_SoftBan_status(group_id, status):
-    save_switch(
-        group_id, "SoftBan_status", status
-    )  # 注意：SoftBan_status 是开关名称，请根据实际情况修改
+    save_switch(group_id, "SoftBan_status", status)
 
 
 # 软封禁管理
 async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_authorized):
+
     if not is_authorized:
         return
 
     command, *params = raw_message.split()
     if command == "sb-add":
         target_user_id = params[0]
-        match = re.search(r"\[CQ:at,qq=(\d+),name=(.*?)\]", target_user_id)
+        match = re.search(r"\[CQ:at,qq=(\d+)\]", target_user_id)
         if match:
             target_user_id = match.group(1)  # 获取目标用户ID
         logging.info(f"添加软封禁用户: {target_user_id}")
@@ -105,7 +104,7 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
         )
     elif command == "sb-rm":
         target_user_id = params[0]
-        match = re.search(r"\[CQ:at,qq=(\d+),name=(.*?)\]", target_user_id)
+        match = re.search(r"\[CQ:at,qq=(\d+)\]", target_user_id)
         if match:
             target_user_id = match.group(1)
         logging.info(f"删除软封禁用户: {target_user_id}")
