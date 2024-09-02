@@ -6,7 +6,6 @@ import os
 import sys
 import re
 
-from pyparsing import matchPreviousLiteral
 
 # 添加项目根目录到sys.path
 sys.path.append(
@@ -24,16 +23,6 @@ DATA_DIR = os.path.join(
     "data",
     "SoftBan",
 )
-
-
-# 检查是否是群主
-def is_group_owner(role):
-    return role == "owner"
-
-
-# 检查是否是管理员
-def is_group_admin(role):
-    return role == "admin"
 
 
 # 检查是否有权限（管理员、群主或root管理员）
