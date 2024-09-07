@@ -117,6 +117,22 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
             )
 
 
+# 软封禁菜单
+async def SoftBan(websocket, group_id, message_id):
+    message = (
+        f"[CQ:reply,id={message_id}]\n"
+        + """
+软封禁系统
+(指不封禁，但是会撤回每条消息)
+
+sb-add@或QQ号 添加软封禁
+sb-rm@或QQ号 删除软封禁
+sb-list 查看本群软封禁
+"""
+    )
+    await send_group_msg(websocket, group_id, message)
+
+
 # 群消息处理函数
 async def handle_SoftBan_group_message(websocket, msg):
     try:
@@ -127,6 +143,9 @@ async def handle_SoftBan_group_message(websocket, msg):
         message_id = str(msg.get("message_id"))
 
         is_authorized_qq = is_authorized(role, user_id)
+
+        if raw_message == "softban":
+            await SoftBan(websocket, group_id, message_id)
 
         if user_id in load_SoftBan_users(group_id):
             logging.info(f"软封禁用户: {user_id} 发送了消息，执行撤回")
