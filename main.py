@@ -80,7 +80,7 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
     if not is_authorized:
         return
 
-    if raw_message == "sb-list":
+    if raw_message == "sblist":
         softban_list = load_SoftBan_users(group_id)
         if softban_list:
             await send_group_msg(
@@ -95,7 +95,7 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
                 group_id,
                 f"[CQ:reply,id={message_id}]群{group_id}软封禁用户列表为空",
             )
-    elif raw_message.startswith("sb-add"):
+    elif raw_message.startswith("sbadd"):
         match = re.search(r"\[CQ:at,qq=([0-9]+)\]", raw_message)
         if match:
             target_user_id = match.group(1)  # 获取目标用户ID
@@ -105,7 +105,7 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
                 group_id,
                 f"[CQ:reply,id={message_id}]用户 {target_user_id} 已被软封禁",
             )
-    elif raw_message.startswith("sb-rm"):
+    elif raw_message.startswith("sbrm"):
         match = re.search(r"\[CQ:at,qq=([0-9]+)\]", raw_message)
         if match:
             target_user_id = match.group(1)
@@ -125,9 +125,9 @@ async def SoftBan(websocket, group_id, message_id):
 软封禁系统
 (指不封禁，但是会撤回每条消息)
 
-sb-add@或QQ号 添加软封禁
-sb-rm@或QQ号 删除软封禁
-sb-list 查看本群软封禁
+sbadd@或QQ号 添加软封禁
+sbrm@或QQ号 删除软封禁
+sblist 查看本群软封禁
 """
     )
     await send_group_msg(websocket, group_id, message)
