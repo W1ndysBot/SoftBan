@@ -77,10 +77,17 @@ def save_SoftBan_status(group_id, status):
 # 软封禁管理
 async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_authorized):
 
-    if not is_authorized:
-        return
-
     if raw_message == "sblist":
+
+        # 鉴权
+        if not is_authorized:
+            await send_group_msg(
+                websocket,
+                group_id,
+                f"[CQ:reply,id={message_id}]您没有权限执行查看软封禁列表操作",
+            )
+            return
+
         softban_list = load_SoftBan_users(group_id)
         if softban_list:
             await send_group_msg(
@@ -96,7 +103,17 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
                 f"[CQ:reply,id={message_id}]群{group_id}软封禁用户列表为空",
             )
     elif raw_message.startswith("sbadd"):
-        match = re.search(r"\[CQ:at,qq=([0-9]+)\]", raw_message)
+
+        # 鉴权
+        if not is_authorized:
+            await send_group_msg(
+                websocket,
+                group_id,
+                f"[CQ:reply,id={message_id}]您没有权限执行添加软封禁操作",
+            )
+            return
+
+        match = re.search(r"([0-9]+)", raw_message)
         if match:
             target_user_id = match.group(1)  # 获取目标用户ID
             add_SoftBan_user(group_id, target_user_id)
@@ -106,7 +123,17 @@ async def manage_SoftBan(websocket, message_id, group_id, raw_message, is_author
                 f"[CQ:reply,id={message_id}]用户 {target_user_id} 已被软封禁",
             )
     elif raw_message.startswith("sbrm"):
-        match = re.search(r"\[CQ:at,qq=([0-9]+)\]", raw_message)
+
+        # 鉴权
+        if not is_authorized:
+            await send_group_msg(
+                websocket,
+                group_id,
+                f"[CQ:reply,id={message_id}]您没有权限执行删除软封禁操作",
+            )
+            return
+
+        match = re.search(r"([0-9]+)", raw_message)
         if match:
             target_user_id = match.group(1)
             remove_SoftBan_user(group_id, target_user_id)
